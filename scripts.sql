@@ -19,3 +19,10 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 INSERT INTO rol ("Rol") VALUES ('admin') ON CONFLICT DO NOTHING;
 INSERT INTO rol ("Rol") VALUES ('usuario') ON CONFLICT DO NOTHING;
+select * from usuarios
+select * from rol
+
+
+//Mantenimiento evolutivo
+ALTER TABLE usuarios
+ADD COLUMN "FechaCambioPassword" TIMESTAMP DEFAULT NOW();

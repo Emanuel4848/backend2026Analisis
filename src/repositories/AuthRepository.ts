@@ -38,4 +38,21 @@ export class AuthRepository {
       include: [Rol],
     });
   }
+
+
+  async updatePassword(correo: string, nuevaPassword: string) {
+  return await Usuario.update(
+    { password: nuevaPassword },
+    { where: { correo } }
+  );
 }
+
+async updateFechaCambioPassword(correo: string) {
+  return await Usuario.update(
+    { fechaCambioPassword: new Date() },
+    { where: { correo } }
+  );
+}
+
+}
+

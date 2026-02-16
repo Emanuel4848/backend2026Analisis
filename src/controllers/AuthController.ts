@@ -38,6 +38,8 @@ export class AuthController {
     }
   }
 
+
+
   async login(req: Request, res: Response) {
     const { usuarioOrCorreo, password } = req.body;
 
@@ -61,4 +63,26 @@ export class AuthController {
       return res.status(401).json({ message: error.message ?? "Login fallido" });
     }
   }
+
+
+  async resetPassword(req: Request, res: Response) {
+  const { correo, nuevaPassword } = req.body;
+
+  try {
+    if (!correo || !nuevaPassword) {
+      return res.status(400).json({ message: "Faltan datos" });
+    }
+
+    await this.authService.resetPassword(correo, nuevaPassword);
+
+    return res.status(200).json({
+      message: "Contraseña actualizada correctamente"
+    });
+
+  } catch (error: any) {
+    return res.status(400).json({
+      message: error.message || "Error al actualizar contraseña"
+    });
+  }
+} 
 }

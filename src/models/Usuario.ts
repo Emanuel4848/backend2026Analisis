@@ -68,4 +68,11 @@ export class Usuario extends Model {
     allowNull: false,
   })
   telefono!: string;
+
+  @Column({
+    field: "FechaCambioPassword",
+    type: DataType.DATE,
+  })
+  fechaCambioPassword!: Date;
+
 }

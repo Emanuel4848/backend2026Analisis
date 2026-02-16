@@ -20,4 +20,6 @@ export interface AuthService {
     rol: string;
     token: string;
   }>;
+
+  resetPassword(correo: string, nuevaPassword: string): Promise<void>;
 }

@@ -25,6 +25,15 @@ export class AuthServiceImpl implements AuthService {
     const existingEmail = await this.authRepository.findByCorreo(correo);
     if (existingEmail) throw new Error("Correo ya existe");
 
+
+
+    const regex = /^[a-zA-Z0-9]+$/;
+
+    if (!regex.test(data.password)) {
+     throw new Error("La contraseña debe ser alfanumérica");
+    }
+
+
     const created = await this.authRepository.createUser({
       usuario,
       nombre: data.nombre.trim(),
@@ -51,6 +60,20 @@ export class AuthServiceImpl implements AuthService {
     const user = await this.authRepository.findByUsuarioOrCorreoAndPassword(input, password);
     if (!user) throw new Error("Credenciales incorrectas");
 
+
+    
+    const hoy = new Date();
+const ultima = new Date(user.fechaCambioPassword);
+
+const dias = (hoy.getTime() - ultima.getTime()) / (1000 * 60 * 60 * 24);
+
+if (dias > 30) {
+  throw new Error("Debe cambiar su contraseña");
+}
+
+
+
+
     const rol = user.rol?.rol ?? "usuario";
 
     const token = "";
@@ -62,5 +85,25 @@ export class AuthServiceImpl implements AuthService {
       rol,
       token,
     };
+    
   }
+
+  async resetPassword(correo: string, nuevaPassword: string): Promise<void> {
+
+  const user = await this.authRepository.findByCorreo(correo);
+  if (!user) throw new Error("Correo no encontrado");
+
+  if (nuevaPassword.length < 4) {
+  throw new Error("La contraseña debe tener mínimo 4 caracteres");
+} 
+
+  const regex = /^[a-zA-Z0-9]+$/;
+  if (!regex.test(nuevaPassword)) {
+  throw new Error("La contraseña debe ser alfanumérica");
+  }
+
+  await this.authRepository.updatePassword(correo, nuevaPassword);
+  await this.authRepository.updateFechaCambioPassword(correo); //actualizar fecha de cambio
+}
+
 }
